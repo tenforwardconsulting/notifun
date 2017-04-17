@@ -1,0 +1,15 @@
+%h1 Message Templates
+
+%table.table
+  %thead
+    %tr
+      %th Message
+      %th Sent via
+      %th
+
+  %tbody
+    - @message_templates.each do |message_template|
+      %tr
+        %td= message_template.key.humanize
+        %td= message_template.sent_via
+        %td= link_to "Edit", edit_notifun_message_template_path(message_template)

@@ -1,0 +1,44 @@
+- if Notifun.configuration.wysiwyg == "tinymce"
+  = tinymce_assets
+%h1 Edit #{@message_template.key.humanize} Message Template
+
+= simple_form_for @message_template, html: { class: "two-columns" } do |f|
+  .form-inputs
+    = f.error_notification
+
+    %p= @message_template.description
+    %p Sent Via: #{@message_template.sent_via}
+    %p Text surrounded by curly brackets "{example}" is replaced with info from the database when sent. The following are the keys you have available for replacement.
+    .notifun-code-block= @message_template.merge_fields_display
+    - if @message_template.push?
+      = f.input :push_body, input_html: { class: 'notifun-code' }
+      .input
+        %label Push Preview
+        .notifun-preview= @message_template.preview_push_body
+      %br
+      %br
+    - if @message_template.email?
+      = f.input :email_subject, input_html: { class: 'notifun-code' }
+      .input
+        %label Email Subject Preview
+        .notifun-preview= @message_template.preview_email_subject
+      %br
+      %br
+      - if Notifun.configuration.wysiwyg == "tinymce"
+        = f.input :email_html, input_html: { rows: 5, class: 'notifun-code tinymce', style: "height: 300px" }
+        = tinymce
+      - else
+        = f.input :email_html, input_html: { rows: 5, class: 'notifun-code' }
+      .input
+        %label Email HTML Preview
+        .notifun-preview
+          %iframe{height: "300px", width: "100%", src: preview_notifun_message_template_path(@message_template)}
+      %br
+      %br
+      = f.input :email_text, input_html: { rows: 5, class: 'notifun-code' }
+      .input
+        %label Email Text Preview
+        .notifun-preview= @message_template.preview_email_text
+
+  .form-actions
+    = f.button :submit
