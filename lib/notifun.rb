@@ -2,6 +2,7 @@ require 'notifun/version'
 require 'notifun/configuration'
 require 'notifun/engine'
 require 'notifun/notifiers/notifier'
+require 'notifun/notification'
 
 module Notifun
   require 'notifun/railtie' if defined?(Rails)

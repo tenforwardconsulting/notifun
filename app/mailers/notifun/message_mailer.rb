@@ -1,5 +1,11 @@
 class Notifun::MessageMailer < Notifun.configuration.parent_mailer.constantize
-  def send_message(email, subject, text, html)
+  def send_message(email, subject, text, html, options={})
+    if options.attachments
+      options.attachments.each do |key, value|
+        attachments[key] = value
+      end
+    end
+
     mail(
       to: email,
       subject: subject

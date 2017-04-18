@@ -3,7 +3,7 @@ class Notifun::Notification
   # notifun_uuid or uuid: unique identifier
   # notifun_email or email: email to send to
   # notify_via(method) returns if it should send message using one of the message types: ["email", "push"]
-  def self.notify(model, key, merge_hash)
+  def self.notify(model, key, merge_hash, options={})
     message_template = Notifun::MessageTemplate.find_by_key(key)
     primary_sent = false
     backup_sent = false
@@ -14,14 +14,14 @@ class Notifun::Notification
     if preference
       sent = false
       preference.notification_methods.each do |notification_method|
-        sent = self.send("send_via_#{notification_method}", message_template, model, merge_hash)
+        sent = self.send("send_via_#{notification_method}", message_template, model, merge_hash, options)
       end
 
       return sent
     else
       message_template.default_notification_methods.each do |notification_method|
         if model.notify_via(notification_method)
-          if self.send("send_via_#{notification_method}", message_template, model, merge_hash)
+          if self.send("send_via_#{notification_method}", message_template, model, merge_hash, options)
             primary_sent = true
           end
         end
@@ -29,7 +29,7 @@ class Notifun::Notification
       if !primary_sent
         message_template.backup_notification_methods.each do |notification_method|
           if model.notify_via(notification_method)
-            if self.send("send_via_#{notification_method}", message_template, model, merge_hash)
+            if self.send("send_via_#{notification_method}", message_template, model, merge_hash, options)
               backup_sent = true
               break
             end
@@ -41,7 +41,7 @@ class Notifun::Notification
     end
   end
 
-  def self.send_via_push(message_template, model, merge_hash)
+  def self.send_via_push(message_template, model, merge_hash, options={})
     text = message_template.merged_push_body(merge_hash)
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
     success = false
@@ -60,14 +60,14 @@ class Notifun::Notification
     return success
   end
 
-  def self.send_via_email(message_template, model, merge_hash)
+  def self.send_via_email(message_template, model, merge_hash, options={})
     text = message_template.merged_email_text(merge_hash)
     html = message_template.merged_email_html(merge_hash)
     subject = message_template.merged_email_subject(merge_hash)
     success = false
     email = model.try(:notifun_email).presence || model.try(:email).presence
     if email
-      Notifun::MessageMailer.send_message(email, subject, text, html).deliver_later
+      Notifun::MessageMailer.send_message(email, subject, text, html, options).deliver_later
       success = true
     end
 
