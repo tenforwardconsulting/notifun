@@ -1,6 +1,6 @@
 module Notifun::Notifier
   def self.push_notifier
-    "#{Notifun.configuration.push_notifier}_notifier".constantize
+    "Notifun::Notifier::#{Notifun.configuration.push_notifier}Notifier".constantize
   end
 end
 
