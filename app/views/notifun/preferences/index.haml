@@ -11,7 +11,7 @@
           - @notification_methods.each do |notification_method|
             %th.notifun-center= notification_method.capitalize
       %tbody
-        - message_templates = Notifun::MessageTemplate.where("models @> Array[?]::varchar[]", "Caddie").where("category IS NOT NULL")
+        - message_templates = Notifun::MessageTemplate.where("models @> Array[?]::varchar[]", model.class.name).where("category IS NOT NULL")
         - message_templates.pluck(:category).uniq.each do |category|
           - prefix = "preferences[#{index}]"
           - index += 1
