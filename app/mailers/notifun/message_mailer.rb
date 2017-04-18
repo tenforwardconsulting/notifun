@@ -1,8 +1,7 @@
 class Notifun::MessageMailer < Notifun.configuration.parent_mailer.constantize
   def send_message(email, subject, text, html, options={})
     if options[:attachments].present?
-      attachments = [options[:attachments]].flatten.compact
-      attachments.each do |key, value|
+      options[:attachments].each do |key, value|
         attachments[key] = value
       end
     end
