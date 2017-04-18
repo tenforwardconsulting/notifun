@@ -1,0 +1,42 @@
+%h1 Notification Preferences
+
+= form_tag save_notifun_preferences_path, class: "notifun-form" do
+  - @models.each do |model|
+    - index = 0
+    %h2 #{model.class.name} Preferences
+    %table.notifun-table
+      %thead
+        %tr
+          %th
+          - @notification_methods.each do |notification_method|
+            %th.notifun-center= notification_method.capitalize
+      %tbody
+        - message_templates = Notifun::MessageTemplate.where("models @> Array[?]::varchar[]", "Caddie").where("category IS NOT NULL")
+        - message_templates.pluck(:category).uniq.each do |category|
+          - prefix = "preferences[#{index}]"
+          - index += 1
+          - preference = Notifun::Preference.where(preferable: model, category: category).first_or_initialize
+          = hidden_field_tag "#{prefix}[preferable_type]", model.class.name
+          = hidden_field_tag "#{prefix}[preferable_id]", model.id
+          = hidden_field_tag "#{prefix}[preference_type]", "category"
+          = hidden_field_tag "#{prefix}[category]", category
+          %tr
+            %td.notifun-category #{category.capitalize} Category
+            - @notification_methods.each do |notification_method|
+              = hidden_field_tag "#{prefix}[#{notification_method}]", "0"
+              %td.notifun-center= check_box_tag "#{prefix}[#{notification_method}]", "1", preference.send(notification_method)
+          - message_templates.where(category: category).each do |message_template|
+            - prefix = "preferences[#{index}]"
+            - index += 1
+            - preference = Notifun::Preference.where(preferable: model, message_template_key: message_template.key).first_or_initialize
+            = hidden_field_tag "#{prefix}[preferable_type]", model.class.name
+            = hidden_field_tag "#{prefix}[preferable_id]", model.id
+            = hidden_field_tag "#{prefix}[preference_type]", "message_template_key"
+            = hidden_field_tag "#{prefix}[message_template_key]", message_template.key
+            %tr
+              %td.notifun-indent= message_template.description
+              - @notification_methods.each do |notification_method|
+                = hidden_field_tag "#{prefix}[#{notification_method}]", "0"
+                - checked = preference.persisted? ? preference.send(notification_method) : message_template.notification_methods.include?(notification_method)
+                %td.notifun-center= check_box_tag "#{prefix}[#{notification_method}]", "1", checked
+  = submit_tag "Save Preferences"

@@ -1,41 +1,57 @@
 class Notifun::Notification
-  require 'notifun/railtie' if defined?(Rails)
   # model passed in must have following methods:
-  # uuid: unique identifier
-  # notifun_email: email to send to
+  # notifun_uuid or uuid: unique identifier
+  # notifun_email or email: email to send to
   # notify_via(method) returns if it should send message using one of the message types: ["email", "push"]
   def self.notify(model, key, merge_hash)
     message_template = Notifun::MessageTemplate.find_by_key(key)
     primary_sent = false
     backup_sent = false
-    message_template.default_notification_methods.each do |notification_method|
-      if model.notify_via(notification_method)
-        if self.send("send_via_#{notification_method}", message_template, model, merge_hash)
-          primary_sent = true
-        end
-      end
+    preference = Notifun::Preference.where(preferable: model).where(message_template_key: key).first
+    if message_template.category.present?
+      preference ||= Notifun::Preference.where(preferable: model).where(category: message_template.category).first
     end
-    if !primary_sent
-      message_template.backup_notification_methods.each do |notification_method|
+    if preference
+      sent = false
+      preference.notification_methods.each do |notification_method|
+        sent = self.send("send_via_#{notification_method}", message_template, model, merge_hash)
+      end
+
+      return sent
+    else
+      message_template.default_notification_methods.each do |notification_method|
         if model.notify_via(notification_method)
           if self.send("send_via_#{notification_method}", message_template, model, merge_hash)
-            backup_sent = true
-            break
+            primary_sent = true
           end
         end
       end
-    end
+      if !primary_sent
+        message_template.backup_notification_methods.each do |notification_method|
+          if model.notify_via(notification_method)
+            if self.send("send_via_#{notification_method}", message_template, model, merge_hash)
+              backup_sent = true
+              break
+            end
+          end
+        end
+      end
 
-    return primary_sent || backup_sent
+      return primary_sent || backup_sent
+    end
   end
 
   def self.send_via_push(message_template, model, merge_hash)
     text = message_template.merged_push_body(merge_hash)
-    success = Notifun::Notifier.push_notifier.notify!(text, model.uuid)
+    uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
+    success = false
+    if uuid
+      success = Notifun::Notifier.push_notifier.notify!(text, uuid)
+    end
     Notifun::Message.create({
       message_template_key: message_template.key,
-      uuid: model.uuid,
-      recipient: model.uuid,
+      uuid: uuid,
+      recipient: uuid,
       notification_method: "push",
       message_text: text,
       success: success
@@ -49,7 +65,8 @@ class Notifun::Notification
     html = message_template.merged_email_html(merge_hash)
     subject = message_template.merged_email_subject(merge_hash)
     success = false
-    if email = model.email.presence
+    email = model.try(:notifun_email).presence || model.try(:email).presence
+    if email
       Notifun::MessageMailer.send_message(email, subject, text, html).deliver_later
       success = true
     end

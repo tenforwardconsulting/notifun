@@ -7,6 +7,7 @@
     = f.error_notification
 
     %p= @message_template.description
+    %p Models: #{@message_template.models.join(', ')}
     %p Sent Via: #{@message_template.sent_via}
     %p Text surrounded by curly brackets "{example}" is replaced with info from the database when sent. The following are the keys you have available for replacement.
     .notifun-code-block= @message_template.merge_fields_display

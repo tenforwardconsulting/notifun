@@ -7,5 +7,10 @@ Rails.application.routes.draw do
       end
     end
     resources :messages, only: [:index]
+    resources :preferences, only: [:index] do
+      collection do
+        post :save
+      end
+    end
   end
 end

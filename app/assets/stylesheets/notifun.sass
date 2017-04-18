@@ -9,3 +9,47 @@
 .notifun-preview
   border: 1px solid #ccc
   padding: 10px
+
+table.notifun-table
+  width: 100%
+  &.space-below
+    margin-bottom: 50px
+
+  tr
+    border-bottom: 1px solid black
+
+  td, th
+    text-align: center
+
+  td
+    color: black
+    padding: 5px 25px 5px 10px
+    text-align: left
+    &.notifun-category
+      font-weight: bold
+    &.notifun-indent
+      padding-left: 20px
+
+  th
+    background-color: #666666
+    border: 1px solid black
+    color: white
+    padding: 5px 10px
+    text-align: left
+    text-transform: uppercase
+    a:link, a:visited
+      color: white
+      text-decoration: underline
+    a:hover
+      text-decoration: none
+
+  tbody
+    tr:nth-child(even)
+      background: #dddddd
+
+.notifun-center
+  text-align: center !important
+
+form.notifun-form
+  width: 100%
+  max-width: 100%
