@@ -1,8 +1,6 @@
 class Notifun::MessageTemplate < ActiveRecord::Base
   self.table_name = 'notifun_message_templates'
 
-  before_save :ensure_valid_html
-
   [:push_body, :email_html, :email_text, :email_subject].each do |method|
     define_method("merged_#{method}") do |merge_hash|
       merge(self.send(method), merge_hash)
@@ -76,9 +74,5 @@ class Notifun::MessageTemplate < ActiveRecord::Base
     end
 
     text
-  end
-
-  def ensure_valid_html
-    self.email_html = Nokogiri::HTML::DocumentFragment.parse(email_html).to_html
   end
 end

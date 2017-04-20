@@ -10,7 +10,7 @@ Notifun.configure do |config|
   # config.push_notifier = "CloudFive"
 
   # Configure how to edit html fields
-  # "timymce", "none"
+  # "froala", timymce", "none"
   # config.wysiwyg = "timymce"
 
   # Configure parent class for Notifun controllers

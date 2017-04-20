@@ -18,6 +18,7 @@ class Notifun::MessageTemplatesController < Notifun.configuration.parent_control
 
   def preview
     @message_template = Notifun::MessageTemplate.find(params[:id])
+    @notifun_models = @message_template.models
 
     render html: @message_template.preview_email_html.html_safe, layout: "mailer"
   end
