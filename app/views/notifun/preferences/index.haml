@@ -38,5 +38,8 @@
               - @notification_methods.each do |notification_method|
                 = hidden_field_tag "#{prefix}[#{notification_method}]", "0"
                 - checked = preference.persisted? ? preference.send(notification_method) : message_template.notification_methods.include?(notification_method)
-                %td.notifun-center= check_box_tag "#{prefix}[#{notification_method}]", "1", checked
+                - if message_template.possible_notification_methods.include?(notification_method)
+                  %td.notifun-center= check_box_tag "#{prefix}[#{notification_method}]", "1", checked
+                - else
+                  %td.notifun-center
   = submit_tag "Save Preferences"

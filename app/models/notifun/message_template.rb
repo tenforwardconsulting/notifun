@@ -32,6 +32,18 @@ class Notifun::MessageTemplate < ActiveRecord::Base
     default_notification_methods + backup_notification_methods
   end
 
+  def possible_notification_methods
+    array = []
+    array << "push" if push_body.present?
+    array << "email" if email_subject.present?
+
+    if array.empty?
+      Notifun.configuration.notification_methods
+    else
+      array
+    end
+  end
+
   def push?
     notification_methods.include?("push")
   end

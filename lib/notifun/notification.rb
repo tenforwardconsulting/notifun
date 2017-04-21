@@ -5,6 +5,7 @@ class Notifun::Notification
   # notifun_notify_via or notify_via(method) returns if it should send message using one of the message types: ["email", "push"]
   def self.notify(models, key, merge_hash={}, options={})
     message_template = Notifun::MessageTemplate.find_by_key(key)
+    raise "Unable to find message_template with key #{key}" if message_template.nil?
     models = [models].flatten
     status = true
     models.each do |model|
@@ -17,13 +18,16 @@ class Notifun::Notification
       if preference
         sent = false
         preference.notification_methods.each do |notification_method|
+          next if options[:notification_methods] && !options[:notification_methods].include?(notification_method)
           sent = self.send("send_via_#{notification_method}", message_template, model, merge_hash, options)
         end
 
         return sent
       else
         message_template.default_notification_methods.each do |notification_method|
-          notify_via = model.try(:notifun_notify_via, notification_method) || model.notify_via(notification_method)
+          next if options[:notification_methods] && !options[:notification_methods].include?(notification_method)
+          notify_via = model.try(:notifun_notify_via, notification_method)
+          notify_via = model.notify_via(notification_method) if notify_via.nil?
           if notify_via
             if self.send("send_via_#{notification_method}", message_template, model, merge_hash, options)
               primary_sent = true
@@ -32,7 +36,9 @@ class Notifun::Notification
         end
         if !primary_sent
           message_template.backup_notification_methods.each do |notification_method|
-            notify_via = model.try(:notifun_notify_via, notification_method) || model.notify_via(notification_method)
+            next if options[:notification_methods] && !options[:notification_methods].include?(notification_method)
+            notify_via = model.try(:notifun_notify_via, notification_method)
+            notify_via = model.notify_via(notification_method) if notify_via.nil?
             if notify_via
               if self.send("send_via_#{notification_method}", message_template, model, merge_hash, options)
                 backup_sent = true

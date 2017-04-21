@@ -12,6 +12,8 @@ class NotifunCreateTables < ActiveRecord::Migration<%= migration_version %>
       t.string :email_subject
       t.text :email_html
       t.text :email_text
+      t.boolean :preferences, default: false, null: false
+      t.boolean :editable, default: true, null: false
 
       t.timestamps
     end

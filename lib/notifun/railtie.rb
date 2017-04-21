@@ -24,7 +24,7 @@ class Notifun::Railtie < ::Rails::Railtie
             template_json.each do |key, attributes|
               begin
                 message_template = Notifun::MessageTemplate.where(key: key).first_or_initialize
-                message_template.attributes = attributes.slice("description", "category", "default_notification_methods", "backup_notification_methods", "merge_fields", "models")
+                message_template.attributes = attributes.slice("description", "category", "default_notification_methods", "backup_notification_methods", "merge_fields", "models", "editable", "preferences")
                 message_template.push_body ||= attributes["push_body"]
                 message_template.email_subject ||= attributes["email_subject"]
                 message_template.email_html ||= attributes["email_html"]
