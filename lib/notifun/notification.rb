@@ -95,7 +95,7 @@ class Notifun::Notification
     end
     email = model.try(:notifun_email).presence || model.try(:email).presence
     if email
-      Notifun::MessageMailer.send_message(email, subject, html, text, message_template, options).deliver_later
+      Notifun::MessageMailer.send_message(email, subject, html, text, message_template, options).deliver_now
       success = true
     end
 
