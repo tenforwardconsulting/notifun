@@ -1,7 +1,7 @@
 class Notifun::MessageTemplate < ActiveRecord::Base
   self.table_name = 'notifun_message_templates'
 
-  [:push_body, :email_html, :email_text, :email_subject].each do |method|
+  [:push_body, :email_html, :email_text, :email_subject, :text_body].each do |method|
     define_method("merged_#{method}") do |merge_hash|
       merge(self.send(method), merge_hash)
     end
@@ -36,9 +36,10 @@ class Notifun::MessageTemplate < ActiveRecord::Base
     array = []
     array << "push" if push_body.present?
     array << "email" if email_subject.present?
+    array << "text" if text_body.present?
 
     if array.empty?
-      Notifun.configuration.notification_methods
+      notification_methods
     else
       array
     end

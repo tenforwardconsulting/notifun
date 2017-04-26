@@ -1,5 +1,6 @@
 Notifun.configure do |config|
   # Configure which types of notifications can be sent
+  # "email", "push", "text"
   config.notification_methods = ["email"]
 
   # Configure the parent class responsible to send e-mails.
@@ -8,6 +9,12 @@ Notifun.configure do |config|
   # Configure how to send push notifications
   # "CloudFive", "Empty"
   # config.push_notifier = "CloudFive"
+  # config.push_config = { api_key: ENV["CLOUD_FIVE_API_KEY"] }
+
+  # Configure how to send text notifications
+  # "Twilio", "Empty"
+  # config.text_notifier = "Twilio"
+  # config.text_config = { account_sid: ENV["TWILIO_ACCOUNT_SID"], auth_token: ENV["TWILIO_AUTH_TOKEN"], from: "+14159341234" }
 
   # Configure how to edit html fields
   # "froala", timymce", "none"

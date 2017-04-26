@@ -1,6 +1,11 @@
 class Notifun::Notifier::CloudFiveNotifier
   def self.notify!(text, uuid, options)
-    notification = CloudFivePush::Notification.new
+    if !defined?(CloudFivePush)
+      return false
+    end
+    api_key = Notifun.configuration.push_config[:api_key]
+    return false unless api_key.present?
+    notification = CloudFivePush::Notification.new(api_key)
     notification.alert = text
     notification.message = text
     notification.user_identifiers = [uuid]

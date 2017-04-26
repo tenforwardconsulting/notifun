@@ -9,6 +9,7 @@ class NotifunCreateTables < ActiveRecord::Migration<%= migration_version %>
       t.string :backup_notification_methods, array: true, default: [], null: false
       t.jsonb :merge_fields, null: false, default: {}
       t.text :push_body
+      t.text :text_body
       t.string :email_subject
       t.text :email_html
       t.text :email_text

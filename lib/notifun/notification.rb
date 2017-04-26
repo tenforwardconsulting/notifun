@@ -57,6 +57,31 @@ class Notifun::Notification
     return status
   end
 
+  def self.send_via_text(message_template, model, merge_hash, options)
+    if options[:message]
+      text = options[:message]
+    else
+      text = message_template.merged_text_body(merge_hash)
+    end
+    phone = model.try(:notifun_phone).presence || model.try(:phone).presence
+    success = false
+    if phone
+      success = Notifun::Notifier.text_notifier.notify!(text, phone, options)
+    end
+    uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
+
+    Notifun::Message.create({
+      message_template_key: message_template.key,
+      uuid: uuid,
+      recipient: phone,
+      notification_method: "text",
+      message_text: text,
+      success: success
+    })
+
+    return success
+  end
+
   def self.send_via_push(message_template, model, merge_hash, options)
     if options[:message]
       text = options[:message]
@@ -99,9 +124,11 @@ class Notifun::Notification
       success = true
     end
 
+    uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
+
     Notifun::Message.create({
       message_template_key: message_template.key,
-      uuid: model.uuid,
+      uuid: uuid,
       recipient: email,
       notification_method: "email",
       message_text: html,
