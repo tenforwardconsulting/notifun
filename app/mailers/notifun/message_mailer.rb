@@ -22,6 +22,9 @@ class Notifun::MessageMailer < Notifun.configuration.parent_mailer.constantize
     if options[:from].present?
       settings[:from] = options[:from]
     end
+    if options[:reply_to].present?
+      settings[:reply_to] = options[:reply_to]
+    end
 
     mail(settings) do |format|
       format.text { render plain: text, layout: _layout }

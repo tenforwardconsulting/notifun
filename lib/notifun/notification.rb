@@ -2,7 +2,7 @@ class Notifun::Notification
   # model passed in must have following methods:
   # notifun_uuid or uuid: unique identifier
   # notifun_email or email: email to send to
-  # notifun_notify_via or notify_via(method) returns if it should send message using one of the message types: ["email", "push"]
+  # notifun_notify_via or notify_via(method) returns if it should send message using one of the message types: ["email", "push", "text"]
   def self.notify(models, key, merge_hash={}, options={})
     message_template = Notifun::MessageTemplate.find_by_key(key)
     raise "Unable to find message_template with key #{key}" if message_template.nil?
@@ -120,8 +120,12 @@ class Notifun::Notification
     end
     email = model.try(:notifun_email).presence || model.try(:email).presence
     if email
-      Notifun::MessageMailer.send_message(email, subject, html, text, message_template, options).deliver_later
-      success = true
+      begin
+        Notifun::MessageMailer.send_message(email, subject, html, text, message_template, options).deliver_now
+        success = true
+      rescue Net::SMTPSyntaxError => e
+        success = false
+      end
     end
 
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence

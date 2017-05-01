@@ -28,3 +28,20 @@
           %td= message.message_template_key.humanize
         %td= message.success ? "Yes" : "No"
         %td= message.created_at.strftime("%D %l:%M %Z")
+
+.notifun-center
+  - if @page == 1
+    %span ← Previous
+  - else
+    = link_to '← Previous', { page: @page - 1 }
+
+  - (1..@pages).each do |p|
+    - if p == @page
+      %em= @page
+    - else
+      = link_to p, { page: p }
+
+  - if @page == @pages
+    %span Next →
+  - else
+    = link_to 'Next →', { page: @page + 1 }
