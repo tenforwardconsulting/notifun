@@ -5,9 +5,9 @@ class Notifun::Preference < ActiveRecord::Base
 
   def notification_methods
     array = []
-    array << "email" if email
-    array << "push" if push
-    array << "text" if text
+    array << Notifun::NotificationMethods::EMAIL if email
+    array << Notifun::NotificationMethods::PUSH if push
+    array << Notifun::NotificationMethods::TEXT if text
     array & Notifun.configuration.notification_methods
   end
 end

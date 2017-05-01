@@ -11,6 +11,12 @@ module Notifun
     attr_accessor :configuration
   end
 
+  module NotificationMethods
+    EMAIL = 'email'
+    PUSH = 'push'
+    TEXT = 'text'
+  end
+
   def self.configuration
     @configuration ||= Configuration.new
   end
