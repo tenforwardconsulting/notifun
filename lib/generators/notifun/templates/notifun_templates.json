@@ -1,0 +1,29 @@
+// {
+//   "message_template_key" : {
+//     "models" : ["User"], // used for preferences, must match models returned by config.controller_method
+//     "description" : "Description Text.", // seen by admin for editing and users for preferences
+//     "category" : "reminders", // categories for admin organization and user preferences
+//     "editable" : false, // indicates whether admin should be able to change the text via the web
+//     // methods not in default or backup can be chosen by user preferences if the related text is present
+//     // if users have edited their preferences, those will always take precedence over these defaults
+//     "default_notification_methods" : ["push"], // tries to send to all of these methods
+//     "backup_notification_methods" : ["email"], // if all default methods fail, will try all of backup until one succeeds
+//     "preferences" : false, // whether users should be allowed to change preferences or not
+//     // display of fields that can be used to show real data; this should match what you pass into Notifun::Notification.notify
+//     "merge_fields" : {
+//       "full_name" : {
+//         "description" : "Full Name of first user",
+//         "preview" : "William Riker"
+//       },
+//       "application_name" : {
+//         "description" : "Name of application",
+//         "preview" : "Awesome App Name"
+//       }
+//     },
+//     "push_body" : "Hello, {full_name}. Welcome to {application_name}.",
+//     "email_subject" : "Welcome to {application_name}.",
+//     "email_html" : "<h3>Hello, {full_name},</h3><p>Welcome to {application_name}.</p>",
+//     "email_text" : "Hello, {full_name}, Welcome to {application_name}.",
+//     "text_body" : "Hello, {full_name}, Welcome to {application_name}."
+//   }
+// }

@@ -13,6 +13,10 @@ class Notifun::InstallGenerator < Rails::Generators::Base
     copy_file "notifun.rb", "config/initializers/notifun.rb"
   end
 
+  def copy_json_file
+    copy_file "notifun_templates.json", "config/notifun_templates.json"
+  end
+
   def rails5?
     Rails.version.start_with? '5'
   end
