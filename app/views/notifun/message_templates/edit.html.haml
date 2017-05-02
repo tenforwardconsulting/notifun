@@ -12,9 +12,15 @@
     %p Text surrounded by curly brackets "{example}" is replaced with info from the database when sent. The following are the keys you have available for replacement.
     .notifun-code-block= @message_template.merge_fields_display
     - if @message_template.push?
+      = f.input :push_title, input_html: { class: 'notifun-code' }
+      .input
+        %label Push Title Preview
+        .notifun-preview= @message_template.preview_push_title
+      %br
+      %br
       = f.input :push_body, input_html: { class: 'notifun-code' }
       .input
-        %label Push Preview
+        %label Push Body Preview
         .notifun-preview= @message_template.preview_push_body
       %br
       %br

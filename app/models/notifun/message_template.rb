@@ -84,6 +84,7 @@ class Notifun::MessageTemplate < ActiveRecord::Base
   private
 
   def merge(text, merge_hash)
+    text ||= ""
     merge_hash.each do |key, value|
       text.gsub!(/\{#{key}\}/, value)
     end

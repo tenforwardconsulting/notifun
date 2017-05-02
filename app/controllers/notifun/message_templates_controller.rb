@@ -26,6 +26,6 @@ class Notifun::MessageTemplatesController < Notifun.configuration.parent_control
   private
 
   def message_template_attributes
-    params.require(:notifun_message_template).permit(:push_body, :email_subject, :email_html, :email_text)
+    params.require(:notifun_message_template).permit(:push_title, :push_body, :email_subject, :email_html, :email_text)
   end
 end
