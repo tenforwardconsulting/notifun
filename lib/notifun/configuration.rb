@@ -10,6 +10,6 @@ class Notifun::Configuration
     @text_config = {}
     @wysiwyg = "none"
     @parent_controller = "ActionController::Base"
-    @controller_method = nil
+    @controller_method = "current_user"
   end
 end

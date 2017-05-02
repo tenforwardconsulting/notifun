@@ -66,7 +66,12 @@ class Notifun::Notification
     phone = model.try(:notifun_phone).presence || model.try(:phone).presence
     success = false
     if phone
-      success = Notifun::Notifier.text_notifier.notify!(text, phone, options)
+      begin
+        success = Notifun::Notifier.text_notifier.notify!(text, phone, options)
+      rescue Twilio::REST::RequestError => e
+        success = false
+        error_message = e.message
+      end
     end
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
 
@@ -76,22 +81,34 @@ class Notifun::Notification
       recipient: phone,
       notification_method: "text",
       message_text: text,
-      success: success
+      success: success,
+      error_message: error_message
     })
 
     return success
   end
 
   def self.send_via_push(message_template, model, merge_hash, options)
-    if options[:message]
+    if options[:message].present?
       text = options[:message]
     else
       text = message_template.merged_push_body(merge_hash)
     end
+    if options[:title].present?
+      title = options[:title]
+    else
+      title = message_template.merged_push_title(merge_hash)
+    end
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
     success = false
     if uuid
-      success = Notifun::Notifier.push_notifier.notify!(text, uuid, options)
+      response = Notifun::Notifier.push_notifier.notify!(text, title, uuid, options)
+      if response['success']
+        success = true
+      else
+        error_message = response["error"].presence || "Failed to send push notification"
+        success = false
+      end
     end
     Notifun::Message.create({
       message_template_key: message_template.key,
@@ -99,7 +116,10 @@ class Notifun::Notification
       recipient: uuid,
       notification_method: "push",
       message_text: text,
-      success: success
+      success: success,
+      message_title: title,
+      data: options[:push_data],
+      error_message: error_message
     })
 
     return success
@@ -107,6 +127,7 @@ class Notifun::Notification
 
   def self.send_via_email(message_template, model, merge_hash, options)
     success = false
+    error_message = nil
     if options[:subject]
       subject = options[:subject]
     else
@@ -124,6 +145,7 @@ class Notifun::Notification
         Notifun::MessageMailer.send_message(email, subject, html, text, message_template, options).deliver_now
         success = true
       rescue Net::SMTPSyntaxError => e
+        error_message = e.message
         success = false
       end
     end
@@ -136,7 +158,9 @@ class Notifun::Notification
       recipient: email,
       notification_method: "email",
       message_text: html,
-      success: success
+      success: success,
+      message_title: subject,
+      error_message: error_message
     })
 
     return success

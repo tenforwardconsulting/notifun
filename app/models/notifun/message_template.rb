@@ -1,7 +1,9 @@
 class Notifun::MessageTemplate < ActiveRecord::Base
   self.table_name = 'notifun_message_templates'
 
-  [:push_body, :email_html, :email_text, :email_subject, :text_body].each do |method|
+  validates :key, uniqueness: true
+
+  [:push_title, :push_body, :email_html, :email_text, :email_subject, :text_body].each do |method|
     define_method("merged_#{method}") do |merge_hash|
       merge(self.send(method), merge_hash)
     end

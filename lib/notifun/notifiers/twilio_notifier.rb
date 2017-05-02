@@ -10,17 +10,11 @@ class Notifun::Notifier::TwilioNotifier
     return false unless account_sid.present? && auth_token.present? && from.present?
 
     client = Twilio::REST::Client.new account_sid, auth_token
-    begin
-      client.messages.create(
-        from: from,
-        to: phone,
-        body: text
-      )
-    rescue Twilio::REST::RequestError => e
-      if e.message == "The message From/To pair violates a blacklist rule."
-        @user.update_attribute(:notification_preference, nil)
-      end
-    end
+    client.messages.create(
+      from: from,
+      to: phone,
+      body: text
+    )
 
     true
   end
