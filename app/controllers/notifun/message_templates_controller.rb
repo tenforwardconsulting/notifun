@@ -4,11 +4,11 @@ class Notifun::MessageTemplatesController < Notifun.configuration.admin_parent_c
   end
 
   def edit
-    @message_template = Notifun::MessageTemplate.find(params[:id])
+    @message_template = Notifun::MessageTemplate.find_by_key(params[:key])
   end
 
   def update
-    @message_template = Notifun::MessageTemplate.find(params[:id])
+    @message_template = Notifun::MessageTemplate.find_by_key(params[:key])
     if @message_template.update(message_template_attributes)
       redirect_to edit_notifun_message_template_path(@message_template), notice: "Message Template updated."
     else
@@ -17,7 +17,7 @@ class Notifun::MessageTemplatesController < Notifun.configuration.admin_parent_c
   end
 
   def preview
-    @message_template = Notifun::MessageTemplate.find(params[:id])
+    @message_template = Notifun::MessageTemplate.find_by_key(params[:key])
     @notifun_models = @message_template.models
 
     render html: @message_template.preview_email_html.html_safe, layout: "mailer"

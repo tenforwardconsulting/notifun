@@ -1,0 +1,47 @@
+%h1 Message Details
+
+.notifun-detail
+  .notifun-detail-title UUID
+  .notifun-detail-value= @message.uuid
+
+.notifun-detail
+  .notifun-detail-title Recipient
+  .notifun-detail-value= @message.recipient
+
+.notifun-detail
+  .notifun-detail-title Sent Via
+  .notifun-detail-value= @message.notification_method
+
+.notifun-detail
+  .notifun-detail-title Template
+  .notifun-detail-value
+    - if @message.message_template.editable
+      = link_to @message.message_template_key.humanize, edit_notifun_message_template_path(@message.message_template.key)
+    - else
+      = @message.message_template_key.humanize
+
+.notifun-detail
+  .notifun-detail-title Sent At
+  .notifun-detail-value= @message.created_at.strftime("%D %l:%M %Z")
+
+.notifun-detail
+  .notifun-detail-title Success
+  .notifun-detail-value= @message.success ? "Yes" : "No"
+
+- if @message.error_message.present?
+  .notifun-detail
+    .notifun-detail-title Error Message
+    .notifun-detail-value= @message.error_message
+
+- if @message.data.present?
+  .notifun-detail
+    .notifun-detail-title Data
+    .notifun-detail-value= @message.data
+
+.notifun-detail
+  .notifun-detail-title Title
+  .notifun-detail-value= @message.message_title || "N/A"
+
+.notifun-detail
+  .notifun-detail-title Text
+  .notifun-detail-value= @message.message_text

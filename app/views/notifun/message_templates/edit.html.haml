@@ -41,7 +41,7 @@
       .input
         %label Email HTML Preview
         .notifun-preview
-          %iframe{height: "300px", width: "100%", src: preview_notifun_message_template_path(@message_template)}
+          %iframe{height: "300px", width: "100%", src: preview_notifun_message_template_path(@message_template.key)}
       %br
       %br
       = f.input :email_text, input_html: { rows: 5, class: 'notifun-code' }

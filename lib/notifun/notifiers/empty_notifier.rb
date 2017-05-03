@@ -1,5 +1,2 @@
-class Notifun::Notifier::EmptyNotifier
-  def self.notify!(*arguments)
-    false
-  end
+class Notifun::Notifier::EmptyNotifier < Notifun::Notifier::ParentNotifier
 end

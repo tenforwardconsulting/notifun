@@ -64,14 +64,14 @@ class Notifun::Notification
       text = message_template.merged_text_body(merge_hash)
     end
     phone = model.try(:notifun_phone).presence || model.try(:phone).presence
-    success = false
     if phone
-      begin
-        success = Notifun::Notifier.text_notifier.notify!(text, phone, options)
-      rescue Twilio::REST::RequestError => e
-        success = false
-        error_message = e.message
-      end
+      text_notifier = Notifun::Notifier.text_notifier.new
+      text_notifier.notify!(text, phone, options)
+      success = text_notifier.success
+      error_message = text_notifier.error_message
+    else
+      success = false
+      error_message = "No phone number."
     end
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
 
@@ -100,15 +100,14 @@ class Notifun::Notification
       title = message_template.merged_push_title(merge_hash)
     end
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence
-    success = false
     if uuid
-      response = Notifun::Notifier.push_notifier.notify!(text, title, uuid, options)
-      if response['success']
-        success = true
-      else
-        error_message = response["error"].presence || "Failed to send push notification"
-        success = false
-      end
+      push_notifier = Notifun::Notifier.push_notifier.new
+      push_notifier.notify!(text, title, uuid, options)
+      success = push_notifier.success
+      error_message = push_notifier.error_message
+    else
+      success = false
+      error_message = "No uuid."
     end
     Notifun::Message.create({
       message_template_key: message_template.key,
@@ -126,8 +125,6 @@ class Notifun::Notification
   end
 
   def self.send_via_email(message_template, model, merge_hash, options)
-    success = false
-    error_message = nil
     if options[:subject]
       subject = options[:subject]
     else
@@ -141,13 +138,13 @@ class Notifun::Notification
     end
     email = model.try(:notifun_email).presence || model.try(:email).presence
     if email
-      begin
-        Notifun::MessageMailer.send_message(email, subject, html, text, message_template, options).deliver_now
-        success = true
-      rescue Net::SMTPSyntaxError => e
-        error_message = e.message
-        success = false
-      end
+      email_notifier = Notifun::Notifier.email_notifier.new
+      email_notifier.notify!(email, subject, html, text, message_template, options)
+      success = email_notifier.success
+      error_message = email_notifier.error_message
+    else
+      success = false
+      error_message = "No email."
     end
 
     uuid = model.try(:notifun_uuid).presence || model.try(:uuid).presence

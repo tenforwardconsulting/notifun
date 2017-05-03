@@ -1,7 +1,9 @@
-class Notifun::Notifier::CloudFiveNotifier
-  def self.notify!(text, title, uuid, options)
+class Notifun::Notifier::CloudFiveNotifier < Notifun::Notifier::ParentNotifier
+  def notify!(text, title, uuid, options)
     if !defined?(CloudFivePush)
-      return false
+      @success = false
+      @error_message = "CloudFivePush is not defined."
+      return
     end
     api_key = options[:api_key].presence
     api_key ||= Notifun.configuration.push_config[:api_key]
@@ -16,6 +18,13 @@ class Notifun::Notifier::CloudFiveNotifier
     end
     notification.user_identifiers = [uuid]
     notification.data = options[:push_data]
-    notification.notify!
+    response = notification.notify!
+
+    if response['success']
+      @success = true
+    else
+      @error_message = response["error"].presence || "Failed to send push notification"
+      @success = false
+    end
   end
 end
