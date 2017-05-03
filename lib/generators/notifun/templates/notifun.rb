@@ -20,8 +20,11 @@ Notifun.configure do |config|
   # "froala", timymce", "none"
   # config.wysiwyg = "timymce"
 
-  # Configure parent class for Notifun controllers
-  config.parent_controller = 'ApplicationController'
+  # Configure parent class for Notifun controllers for admin actions like editing message templates
+  config.admin_parent_controller = 'ApplicationController'
+
+  # Configure parent class for Notifun controllers for user actions like editing preferences
+  config.user_parent_controller = 'ApplicationController'
 
   # Configure controller helper method to use to get the model
   # notifun should use for the currently logged in person for the preferences page

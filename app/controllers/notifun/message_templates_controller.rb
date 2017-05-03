@@ -1,4 +1,4 @@
-class Notifun::MessageTemplatesController < Notifun.configuration.parent_controller.constantize
+class Notifun::MessageTemplatesController < Notifun.configuration.admin_parent_controller.constantize
   def index
     @message_templates = Notifun::MessageTemplate.all
   end

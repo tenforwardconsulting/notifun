@@ -1,6 +1,6 @@
-class Notifun::MessagesController < Notifun.configuration.parent_controller.constantize
+class Notifun::MessagesController < Notifun.configuration.admin_parent_controller.constantize
   def index
-    limit = 10
+    limit = 100
 
     @page = (params[:page].presence || 1).to_i
     offset = limit * (@page - 1)

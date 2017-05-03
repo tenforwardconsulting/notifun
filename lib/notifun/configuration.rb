@@ -1,5 +1,5 @@
 class Notifun::Configuration
-  attr_accessor :notification_methods, :parent_mailer, :push_notifier, :push_config, :text_notifier, :text_config, :wysiwyg, :parent_controller, :controller_method
+  attr_accessor :notification_methods, :parent_mailer, :push_notifier, :push_config, :text_notifier, :text_config, :wysiwyg, :admin_parent_controller, :user_parent_controller, :controller_method
 
   def initialize
     @notification_methods = []
@@ -9,7 +9,8 @@ class Notifun::Configuration
     @text_notifier = "Empty"
     @text_config = {}
     @wysiwyg = "none"
-    @parent_controller = "ActionController::Base"
+    @admin_parent_controller = "ActionController::Base"
+    @user_parent_controller = "ActionController::Base"
     @controller_method = "current_user"
   end
 end

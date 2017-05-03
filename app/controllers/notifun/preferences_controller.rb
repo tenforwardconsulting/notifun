@@ -1,4 +1,4 @@
-class Notifun::PreferencesController < Notifun.configuration.parent_controller.constantize
+class Notifun::PreferencesController < Notifun.configuration.user_parent_controller.constantize
   def index
     begin
       @models = self.send(Notifun.configuration.controller_method)
