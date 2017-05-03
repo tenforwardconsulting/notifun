@@ -109,6 +109,7 @@ class Notifun::Notification
       success = false
       error_message = "No uuid."
     end
+    data = options[:push_data].presence || {}
     Notifun::Message.create({
       message_template_key: message_template.key,
       uuid: uuid,
@@ -117,7 +118,7 @@ class Notifun::Notification
       message_text: text,
       success: success,
       message_title: title,
-      data: options[:push_data],
+      data: data,
       error_message: error_message
     })
 
