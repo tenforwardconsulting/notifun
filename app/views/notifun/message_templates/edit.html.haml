@@ -34,7 +34,7 @@
       - if Notifun.configuration.wysiwyg == "tinymce"
         = f.input :email_html, input_html: { rows: 5, class: 'notifun-code tinymce', style: "height: 300px" }
         = tinymce
-      - elsif Notifun.configuration.wysiwyg = "froala"
+      - elsif Notifun.configuration.wysiwyg == "froala"
         = f.input :email_html, input_html: { rows: 5, class: 'notifun-code froala-editor', data: { froalaoptions: { heightMin: 300 }} }
       - else
         = f.input :email_html, input_html: { rows: 5, class: 'notifun-code' }
