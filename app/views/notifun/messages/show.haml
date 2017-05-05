@@ -22,7 +22,7 @@
 
 .notifun-detail
   .notifun-detail-title Sent At
-  .notifun-detail-value= @message.created_at.strftime("%D %l:%M %Z")
+  .notifun-detail-value= @message.created_at.in_time_zone(Notifun.configuration.time_zone).strftime("%D %l:%M %Z")
 
 .notifun-detail
   .notifun-detail-title Success

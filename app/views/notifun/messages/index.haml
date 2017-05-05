@@ -26,7 +26,7 @@
         - else
           %td= message.message_template_key.humanize
         %td= message.success ? "Yes" : "No"
-        %td= message.created_at.strftime("%D %l:%M %Z")
+        %td= message.created_at.in_time_zone(Notifun.configuration.time_zone).strftime("%D %l:%M %Z")
         %td= link_to "View", message
 
 .notifun-center
