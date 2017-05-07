@@ -13,7 +13,7 @@
         %td= message_template.description
         %td= message_template.sent_via
         - if message_template.editable
-          %td= link_to "Edit", edit_notifun_message_template_path(message_template.key)
+          %td= link_to "Edit", edit_notifun_message_template_path(message_template)
         - else
           %td
     - @message_templates.order(:category).pluck(:category).uniq.compact.each do |category|
@@ -24,6 +24,6 @@
           %td= message_template.description
           %td= message_template.sent_via
           - if message_template.editable
-            %td= link_to "Edit", edit_notifun_message_template_path(message_template.key)
+            %td= link_to "Edit", edit_notifun_message_template_path(message_template)
           - else
             %td

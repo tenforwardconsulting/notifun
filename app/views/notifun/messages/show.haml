@@ -16,7 +16,7 @@
   .notifun-detail-title Template
   .notifun-detail-value
     - if @message.message_template.editable
-      = link_to @message.message_template_key.humanize, edit_notifun_message_template_path(@message.message_template.key)
+      = link_to @message.message_template_key.humanize, edit_notifun_message_template_path(@message.message_template)
     - else
       = @message.message_template_key.humanize
 

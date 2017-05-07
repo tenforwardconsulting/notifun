@@ -3,6 +3,10 @@ class Notifun::MessageTemplate < ActiveRecord::Base
 
   validates :key, uniqueness: true
 
+  def to_param
+    key
+  end
+
   [:push_title, :push_body, :email_html, :email_text, :email_subject, :text_body].each do |method|
     define_method("merged_#{method}") do |merge_hash|
       merge(self.send(method), merge_hash)

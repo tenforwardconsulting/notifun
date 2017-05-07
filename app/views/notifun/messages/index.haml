@@ -22,7 +22,7 @@
         %td= message.recipient
         %td= message.notification_method
         - if message.message_template
-          %td= link_to message.message_template_key.humanize, edit_notifun_message_template_path(message.message_template.key)
+          %td= link_to message.message_template_key.humanize, edit_notifun_message_template_path(message.message_template)
         - else
           %td= message.message_template_key.humanize
         %td= message.success ? "Yes" : "No"
