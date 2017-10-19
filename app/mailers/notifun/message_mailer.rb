@@ -26,9 +26,15 @@ class Notifun::MessageMailer < Notifun.configuration.parent_mailer.constantize
       settings[:reply_to] = options[:reply_to]
     end
 
+    if Rails.version[0].to_i > 4
+      hack_layout = _layout(["text"])
+    else
+      hack_layout = _layout
+    end
+
     mail(settings) do |format|
-      format.text { render plain: text, layout: _layout }
-      format.html { render html: html.html_safe, layout: _layout }
+      format.text { render plain: text, layout: hack_layout }
+      format.html { render html: html.html_safe, layout: hack_layout }
     end
   end
 end
