@@ -9,7 +9,7 @@ class Notifun::Railtie < ::Rails::Railtie
   end
 
   initializer "notifun.load_templates" do |config|
-    if ( File.basename($0) != 'rake' && !defined?(::Rake) )
+    if ( File.basename($0) != 'rake' )
       if !ActiveRecord::Base.connection.table_exists?('notifun_message_templates')
         puts "Notifun not importing templates because Notifun tables don't exist."
       else
@@ -36,6 +36,8 @@ class Notifun::Railtie < ::Rails::Railtie
                 puts "Failed to load message_template #{key}: #{e.message}"
               end
             end
+
+            puts "Notifun initialized successfully!"
           end
         else
           puts "No Notifun message templates loaded because app/config/notifun_templates.json does not exist."

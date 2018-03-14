@@ -58,7 +58,7 @@ class Notifun::Notification
   end
 
   def self.send_via_text(message_template, model, merge_hash, options)
-    if options[:message]
+    if options[:message].present?
       text = options[:message]
     else
       text = message_template.merged_text_body(merge_hash)
@@ -126,12 +126,12 @@ class Notifun::Notification
   end
 
   def self.send_via_email(message_template, model, merge_hash, options)
-    if options[:subject]
+    if options[:subject].present?
       subject = options[:subject]
     else
       subject = message_template.merged_email_subject(merge_hash)
     end
-    if options[:message]
+    if options[:message].present?
       text = html = options[:message]
     else
       text = message_template.merged_email_text(merge_hash)
