@@ -32,4 +32,8 @@ Notifun.configure do |config|
   # this must be set for preferences to work
   # can return an array of models
   # config.controller_method = "current_user"
+
+  # If you have the premailer gem installed and you want to use it to automatically
+  # convert your html to plain text, set this to true
+  config.premailer_html_to_text = false
 end

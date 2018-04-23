@@ -1,4 +1,8 @@
 class Notifun::MessageMailer < Notifun.configuration.parent_mailer.constantize
+  if Notifun.configuration.premailer_html_to_text && defined?(Premailer)
+    include Premailer::HtmlToPlainText
+  end
+
   def send_message(email, subject, html, text, message_template, options={})
     @notifun_models = message_template.models
 
@@ -30,6 +34,11 @@ class Notifun::MessageMailer < Notifun.configuration.parent_mailer.constantize
       hack_layout = _layout(["text"])
     else
       hack_layout = _layout
+    end
+
+    if Notifun.configuration.premailer_html_to_text && defined?(Premailer)
+      text = text.dup
+      text = convert_to_text(text)
     end
 
     mail(settings) do |format|
