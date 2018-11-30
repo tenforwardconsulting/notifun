@@ -18,6 +18,7 @@ class Notifun::Notifier::CloudFiveNotifier < Notifun::Notifier::ParentNotifier
     end
     notification.user_identifiers = [uuid]
     notification.data = options[:push_data]
+    notification.content_available = options[:content_available]
     response = notification.notify!
 
     if response['success']
